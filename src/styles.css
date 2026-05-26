@@ -1,0 +1,290 @@
+:root {
+  color: #eef3ff;
+  background: #000;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: #000;
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.player-frame {
+  --scene-aspect-ratio: 16 / 9;
+  --scene-aspect-ratio-value: 1.7777777778;
+
+  width: min(1280px, 100%, calc((100vh - 48px) * var(--scene-aspect-ratio-value)));
+  aspect-ratio: var(--scene-aspect-ratio);
+  overflow: hidden;
+  border-radius: 32px;
+}
+
+.generation-frame {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent),
+    #111827;
+}
+
+.ai-reveal,
+.ai-reveal__image,
+.ai-reveal__blur-patch,
+.ai-reveal__canvas,
+.ai-reveal__grain {
+  position: absolute;
+  inset: 0;
+}
+
+.ai-reveal {
+  overflow: hidden;
+  background: #101827;
+  isolation: isolate;
+  z-index: 0;
+  transform-origin: center;
+  animation: global-gaussian-resolve 7.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: filter, transform;
+}
+
+.ai-reveal__image,
+.ai-reveal__blur-patch {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ai-reveal__image {
+  display: block;
+  filter: blur(30px) saturate(1.28) contrast(1.08);
+  transform: scale(1.075);
+  animation: image-resolve 7.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.ai-reveal__blur-patch {
+  pointer-events: none;
+  filter: blur(36px) saturate(1.35) contrast(1.14);
+  mix-blend-mode: screen;
+  opacity: 0.78;
+  transform: scale(1.09);
+}
+
+.ai-reveal__blur-patch--one {
+  clip-path: ellipse(42% 34% at 28% 34%);
+  animation: blur-patch-one 7.4s ease-out forwards;
+}
+
+.ai-reveal__blur-patch--two {
+  clip-path: ellipse(36% 28% at 73% 62%);
+  animation: blur-patch-two 7.4s ease-out forwards;
+}
+
+.ai-reveal__canvas {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ai-reveal__canvas--mosaic {
+  mix-blend-mode: normal;
+}
+
+.ai-reveal__canvas--particles {
+  filter: drop-shadow(0 0 12px rgba(125, 217, 255, 0.22));
+}
+
+.ai-reveal__grain {
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.36) 0.7px, transparent 0.7px),
+    radial-gradient(rgba(125, 217, 255, 0.18) 0.8px, transparent 0.8px);
+  background-position:
+    0 0,
+    18px 22px;
+  background-size:
+    34px 34px,
+    44px 44px;
+  mix-blend-mode: screen;
+  opacity: 0.32;
+  animation: grain-fade 7.4s ease-out forwards;
+}
+
+.generation-frame::before {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  content: "";
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mix-blend-mode: screen;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.scanline {
+  position: absolute;
+  inset: -20% 0 auto;
+  z-index: 3;
+  height: 35%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(127, 217, 255, 0.32),
+    rgba(255, 255, 255, 0.18),
+    transparent
+  );
+  animation: scan 4.8s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+.player-frame--empty {
+  min-height: min(720px, calc(100vh - 48px));
+}
+
+@keyframes scan {
+  0% {
+    transform: translateY(-45%);
+    opacity: 0;
+  }
+
+  18%,
+  82% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(340%);
+    opacity: 0;
+  }
+}
+
+@keyframes global-gaussian-resolve {
+  0% {
+    filter: blur(22px);
+    transform: scale(1.045);
+  }
+
+  28% {
+    filter: blur(18px);
+  }
+
+  62% {
+    filter: blur(7px);
+  }
+
+  100% {
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+@keyframes image-resolve {
+  0% {
+    filter: blur(34px) saturate(1.36) contrast(1.1);
+    opacity: 0.58;
+    transform: scale(1.09);
+  }
+
+  38% {
+    filter: blur(18px) saturate(1.24) contrast(1.08);
+    opacity: 0.78;
+  }
+
+  72% {
+    filter: blur(5px) saturate(1.12) contrast(1.05);
+    opacity: 0.96;
+  }
+
+  100% {
+    filter: blur(0) saturate(1.05) contrast(1.04);
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes blur-patch-one {
+  0%,
+  34% {
+    opacity: 0.82;
+    transform: translate(-3%, 2%) scale(1.12);
+  }
+
+  72% {
+    opacity: 0.28;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(3%, -1%) scale(1.02);
+  }
+}
+
+@keyframes blur-patch-two {
+  0%,
+  22% {
+    opacity: 0.68;
+    transform: translate(4%, -4%) scale(1.13);
+  }
+
+  64% {
+    opacity: 0.34;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-2%, 3%) scale(1.02);
+  }
+}
+
+@keyframes grain-fade {
+  0% {
+    opacity: 0.42;
+    transform: translate3d(-1.5%, -1%, 0);
+  }
+
+  70% {
+    opacity: 0.2;
+  }
+
+  100% {
+    opacity: 0.06;
+    transform: translate3d(1%, 1.5%, 0);
+  }
+}
+
+@media (max-width: 820px) {
+  .app-shell {
+    padding: 14px;
+  }
+
+  .player-frame {
+    width: min(1280px, 100%, calc((100vh - 28px) * var(--scene-aspect-ratio-value)));
+    border-radius: 22px;
+  }
+}
